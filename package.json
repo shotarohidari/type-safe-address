@@ -1,0 +1,21 @@
+{
+  "name": "zero-feature-release",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "pnpm vitest",
+    "format":"pnpm @biomejs/biome format --write ./src",
+    "lint":"pnpm @biomejs/biome lint --write ./src",
+    "check":"pnpm @biomejs/biome check --write ./src"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "1.8.0",
+    "lefthook": "^1.6.15",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
