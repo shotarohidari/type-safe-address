@@ -2,6 +2,8 @@
 import JSZip from "jszip"
 import { csv2json } from "csv42"
 import fse from "fs-extra"
+import { AsyncJobQue } from "../src/jobque.js"
+
 const addressURL =
   "https://www.post.japanpost.jp/zipcode/dl/utf/zip/utf_ken_all.zip"
 
@@ -49,12 +51,11 @@ const csvHeader = [
 ].join(",")
 const addressRecords = csv2json<AddressField>(`${csvHeader}\r\n${csvString}`)
 
-// Promise.allを最適化する必要あり
-// const prefectures = addressRecords.map((record) => record.prefecture_kanji)
-const prefectures = ["東京都"]
+const prefectures = [...new Set(addressRecords.map((record) => record.prefecture_kanji))]
 
-await Promise.all(
-  prefectures.map(async (prefecture) => {
+const asyncJobQueue = new AsyncJobQue({
+  tasks: prefectures,
+  taskHandler: async (prefecture) => {
     const prefectureRecords = addressRecords.filter(
       ({ prefecture_kanji }) => prefecture_kanji === prefecture
     )
@@ -78,5 +79,7 @@ await Promise.all(
           )
       )
     )
-  })
-)
+    console.log(`${prefecture} finished!`);
+  },
+})
+await asyncJobQueue.run();
